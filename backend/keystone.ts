@@ -6,6 +6,7 @@ import {
 } from '@keystone-next/keystone/session';
 import 'dotenv/config';
 import { User, Product, ProductImage } from './schemas';
+import { insertSeedData } from './seed-data';
 
 // eslint-disable-next-line
 const sessionConfig = {
@@ -34,7 +35,11 @@ export default withAuth(
     db: {
       adapter: 'mongoose', // what keystone uses under the hood, knex if using sql
       url: process.env.DATABASE_URL,
-      // TODO: data seeding
+      onConnect: async (keystone) => {
+        if (process.argv.includes('--seed-data')) {
+          await insertSeedData(keystone);
+        }
+      },
     },
     lists: createSchema({
       User,
