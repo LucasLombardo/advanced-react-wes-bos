@@ -1,6 +1,7 @@
 import { config, createSchema } from '@keystone-next/keystone/schema';
 import 'dotenv/config';
 
+// eslint-disable-next-line
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days, how long the jwt cookie last for
   secret: process.env.COOKIE_SECRET, // jwt secret key
