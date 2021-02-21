@@ -1,5 +1,6 @@
 import { config, createSchema } from '@keystone-next/keystone/schema';
 import 'dotenv/config';
+import { User } from './schemas/User';
 
 // eslint-disable-next-line
 const sessionConfig = {
@@ -20,7 +21,7 @@ export default config({
     // TODO: data seeding
   },
   lists: createSchema({
-    // TODO: add schema items
+    User,
   }),
   ui: {
     // TODO: check roles before allowing access to control panel
