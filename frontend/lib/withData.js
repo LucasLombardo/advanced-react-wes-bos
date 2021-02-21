@@ -26,7 +26,7 @@ function createClient({ headers, initialState }) {
         fetchOptions: {
           credentials: 'include',
         },
-        // pass the headers along from this request. This enables SSR with logged in state
+        // pass the headers along from this request. This enables SSR with logged in state (avoids flash of unlogged in content)
         headers,
       }),
     ]),
