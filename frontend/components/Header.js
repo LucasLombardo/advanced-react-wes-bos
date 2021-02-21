@@ -10,6 +10,7 @@ const Logo = styled.h1`
   z-index: 2;
   background: red;
   transform: skew(-7deg);
+  text-transform: uppercase;
   a {
     color: white;
   }
