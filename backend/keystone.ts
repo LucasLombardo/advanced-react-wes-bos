@@ -5,7 +5,7 @@ import {
   statelessSessions,
 } from '@keystone-next/keystone/session';
 import 'dotenv/config';
-import { User } from './schemas/User';
+import { User, Product } from './schemas';
 
 // eslint-disable-next-line
 const sessionConfig = {
@@ -38,6 +38,7 @@ export default withAuth(
     },
     lists: createSchema({
       User,
+      Product,
     }),
     ui: {
       // Show UI only for people that pass this test
