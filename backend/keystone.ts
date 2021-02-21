@@ -1,4 +1,9 @@
 import { config, createSchema } from '@keystone-next/keystone/schema';
+import { createAuth } from '@keystone-next/auth';
+import {
+  withItemData,
+  statelessSessions,
+} from '@keystone-next/keystone/session';
 import 'dotenv/config';
 import { User } from './schemas/User';
 
@@ -8,24 +13,39 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET, // jwt secret key
 };
 
-export default config({
-  server: {
-    cors: {
-      origin: [process.env.FRONTEND_URL],
-      credentials: true, // will pass along the session cookie
-    },
+const { withAuth } = createAuth({
+  listKey: 'User', // which schema is responsible for being the user
+  identityField: 'email', // unique identifier
+  secretField: 'password', // credentials
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+    // TODO: add roles for default seeded user
   },
-  db: {
-    adapter: 'mongoose', // what keystone uses under the hood, knex if using sql
-    url: process.env.DATABASE_URL,
-    // TODO: data seeding
-  },
-  lists: createSchema({
-    User,
-  }),
-  ui: {
-    // TODO: check roles before allowing access to control panel
-    isAccessAllowed: () => true,
-  },
-  // TODO: add session values here
 });
+
+export default withAuth(
+  config({
+    server: {
+      cors: {
+        origin: [process.env.FRONTEND_URL],
+        credentials: true, // will pass along the session cookie
+      },
+    },
+    db: {
+      adapter: 'mongoose', // what keystone uses under the hood, knex if using sql
+      url: process.env.DATABASE_URL,
+      // TODO: data seeding
+    },
+    lists: createSchema({
+      User,
+    }),
+    ui: {
+      // Show UI only for people that pass this test
+      isAccessAllowed: ({ session }) => !!session?.data,
+    },
+    session: withItemData(statelessSessions(sessionConfig), {
+      // what values to pass with any session
+      User: 'id name email',
+    }),
+  })
+);
